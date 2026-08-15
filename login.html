@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Login - Reserva de Laboratorio</title>
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1>Reserva de Laboratorio</h1>
+            <p>Ingresa con tu RUT y contraseña institucional</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="rut">RUT</label>
+                    <input type="text" id="rut" placeholder="Ej: 12345678-9" required autocomplete="username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="clave">Contraseña</label>
+                    <input type="password" id="clave" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                
+                <div id="errorMsg" style="color: #ef4444; font-size: 14px; margin-bottom: 15px; display: none;"></div>
+                
+                <button type="submit" class="btn-primary" id="btnSubmit">Ingresar al Sistema</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmit');
+            const errorMsg = document.getElementById('errorMsg');
+            const rut = document.getElementById('rut').value;
+            const clave = document.getElementById('clave').value;
+            
+            btn.disabled = true;
+            btn.textContent = 'Verificando...';
+            errorMsg.style.display = 'none';
+            
+            try {
+                const res = await fetch('api/login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ rut, clave })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok && data.success) {
+                    window.location.href = 'index.html';
+                } else {
+                    throw new Error(data.error || 'Error al iniciar sesión');
+                }
+            } catch (err) {
+                errorMsg.textContent = err.message;
+                errorMsg.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Ingresar al Sistema';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Calendario - Reserva de Laboratorio</title>
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+    <header class="header">
+        <h1>Reserva de Laboratorio</h1>
+        <div class="user-info">
+            <span id="userDisplayName">Cargando...</span>
+            <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="calendar-toolbar">
+            <div class="week-navigation">
+                <button onclick="changeWeek(-1)">← Semana Anterior</button>
+                <h3 id="currentWeekLabel">Semana del ...</h3>
+                <button onclick="changeWeek(1)">Siguiente Semana →</button>
+            </div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-color" style="background:var(--color-available);border-color:var(--color-available-border)"></div> Disponible</div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--color-reserved);border-color:var(--color-reserved-border)"></div> Reservado</div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--color-confirmed);border-color:var(--color-confirmed-border)"></div> Confirmado</div>
+            </div>
+        </div>
+
+        <div class="mobile-tabs" id="mobileTabs" style="display: none;">
+            <button class="mobile-tab active" onclick="selectMobileDay(0)">LUN</button>
+            <button class="mobile-tab" onclick="selectMobileDay(1)">MAR</button>
+            <button class="mobile-tab" onclick="selectMobileDay(2)">MIE</button>
+            <button class="mobile-tab" onclick="selectMobileDay(3)">JUE</button>
+            <button class="mobile-tab" onclick="selectMobileDay(4)">VIE</button>
+        </div>
+
+        <div class="grid-calendar" id="calendarGrid" data-active-day="0">
+            <!-- Renderizado desde app.js -->
+        </div>
+    </main>
+
+    <!-- Modal Acción -->
+    <div class="modal-overlay" id="actionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Acción sobre el Bloque</h3>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            
+            <form id="actionForm">
+                <input type="hidden" id="modalDate">
+                <input type="hidden" id="modalDay">
+                <input type="hidden" id="modalBlock">
+                <input type="hidden" id="modalReservaId">
+
+                <div class="form-group" id="groupTeacher">
+                    <label>Profesor</label>
+                    <select id="modalTeacher"></select>
+                </div>
+
+                <div class="form-group" id="groupCourse">
+                    <label>Curso / Asignatura</label>
+                    <input type="text" id="modalCourse" placeholder="Ej: 3ro Medio A - Historia">
+                </div>
+
+                <div class="form-group" id="groupRepeat" style="display:none;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                        <input type="checkbox" id="modalRepeat" checked style="width:auto; transform:scale(1.2);">
+                        Repetir esta reserva todo el semestre (próximas 16 semanas)
+                    </label>
+                </div>
+
+                <p id="modalStatusText" style="color:var(--text-light);font-size:14px;margin-bottom:15px;"></p>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancelar</button>
+                    <!-- Dinamic Buttons -->
+                    <button type="button" class="btn-primary hidden" id="btnReserve" onclick="submitReservation()">Reservar</button>
+                    <button type="button" class="btn-success hidden" id="btnConfirm" onclick="changeStatus('confirmado')">Confirmar</button>
+                    <button type="button" class="btn-secondary hidden" id="btnMakeAvailable" onclick="changeStatus('disponible')">Marcar Disponible</button>
+                    <button type="button" class="btn-danger hidden" id="btnCancelRes" onclick="changeStatus('cancelado')">Eliminar Reserva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js?v=2"></script>
+</body>
+</html>
